@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	apiURL = "http://sql.znlhzl.cn"
+	apiURL = "http://sql.archery.com"
 
 	maxRetries = 3
 )

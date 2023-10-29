@@ -3,8 +3,6 @@ package archeryapi
 import (
 	"encoding/json"
 	"strconv"
-
-	"github.com/fatih/structs"
 )
 
 type ResourceType string
@@ -43,12 +41,14 @@ func (c *InstanceClient) GetInstances() ([]Instance, error) {
 }
 
 func (c *InstanceClient) GetInstanceResource(req *InstanceResourceQueryRequest) ([]string, error) {
-	params := map[string]string{}
-	for k, v := range structs.Map(req) {
-		params[k] = string(v.(string))
-	}
 	r, err := c.apiClient.httpClient.R().
-		SetQueryParams(params).
+		SetQueryParams(map[string]string{
+			"instance_name": req.InstanceName,
+			"db_name":       req.DbName,
+			"schema_name":   req.SchemaName,
+			"tb_name":       req.TbName,
+			"resource_type": req.ResourceType.String(),
+		}).
 		Get("/instance/instance_resource/")
 	if err != nil {
 		return nil, err

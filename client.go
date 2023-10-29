@@ -16,8 +16,9 @@ const (
 	maxRetries = 3
 )
 
-func NewClient(username, password string) *Client {
+func NewClient(username, password string, opts ...ClientOption) *Client {
 	u, err := url.Parse(apiURL)
+
 	if err != nil {
 		panic(err)
 	}
@@ -27,6 +28,10 @@ func NewClient(username, password string) *Client {
 		maxRetries: maxRetries,
 		username:   username,
 		password:   password,
+	}
+
+	for _, opt := range opts {
+		opt(c)
 	}
 
 	c.initHttpClient()
@@ -50,11 +55,29 @@ type Client struct {
 	Instance InstanceService
 }
 
+type ClientOption func(*Client)
+
+func WithMaxRetries(maxRetries int) ClientOption {
+	return func(c *Client) {
+		c.maxRetries = maxRetries
+	}
+}
+
+func WithBaseUrl(baseUrl string) ClientOption {
+	return func(c *Client) {
+		u, err := url.Parse(baseUrl)
+		if err != nil {
+			panic(err)
+		}
+		c.baseUrl = u
+	}
+}
+
 func (c *Client) initHttpClient() {
 	jar, _ := cookiejar.New(nil)
 	c.httpClient = resty.New()
 	c.httpClient.SetCookieJar(jar)
-	c.httpClient.SetBaseURL(apiURL)
+	c.httpClient.SetBaseURL(c.baseUrl.String())
 	err := c.authenticate()
 	if err != nil {
 		panic(err)

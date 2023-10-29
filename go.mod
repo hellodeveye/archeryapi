@@ -1,4 +1,4 @@
-module archeryclient
+module github.com/hellodeveye/archeryapi
 
 go 1.20
 

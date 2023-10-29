@@ -1,4 +1,4 @@
-package archeryclient
+package archeryapi
 
 import (
 	"encoding/json"

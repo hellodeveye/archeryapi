@@ -26,6 +26,7 @@ func NewClient(username, password string, opts ...ClientOption) *Client {
 	c := &Client{
 		baseUrl:    u,
 		maxRetries: maxRetries,
+		debugger:   false,
 		username:   username,
 		password:   password,
 	}
@@ -47,6 +48,7 @@ type Client struct {
 
 	baseUrl    *url.URL
 	maxRetries int
+	debugger   bool
 
 	username string
 	password string
@@ -73,11 +75,19 @@ func WithBaseUrl(baseUrl string) ClientOption {
 	}
 }
 
+func WithDebugger(debugger bool) ClientOption {
+	return func(c *Client) {
+		c.debugger = debugger
+	}
+}
+
 func (c *Client) initHttpClient() {
 	jar, _ := cookiejar.New(nil)
 	c.httpClient = resty.New()
 	c.httpClient.SetCookieJar(jar)
 	c.httpClient.SetBaseURL(c.baseUrl.String())
+	c.httpClient.SetDebug(c.debugger)
+	c.httpClient.SetRetryCount(c.maxRetries)
 	err := c.authenticate()
 	if err != nil {
 		panic(err)

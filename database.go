@@ -8,7 +8,7 @@ import (
 )
 
 type DatabaseService interface {
-	Query(sql string, opt ...QueryOption) (DatabaseQueryResponse, error)
+	Query(sql string, request *QueryRequest) (DatabaseQueryResponse, error)
 }
 
 type DatabaseClient struct {
@@ -17,11 +17,7 @@ type DatabaseClient struct {
 
 type QueryOption func(*QueryRequest)
 
-func (c *DatabaseClient) Query(sql string, opt ...QueryOption) (DatabaseQueryResponse, error) {
-	request := &QueryRequest{}
-	for _, o := range opt {
-		o(request)
-	}
+func (c *DatabaseClient) Query(sql string, request *QueryRequest) (DatabaseQueryResponse, error) {
 	request.SQLContent = sql
 	params := map[string]string{}
 	for k, v := range structs.Map(request) {
@@ -53,42 +49,6 @@ type QueryRequest struct {
 	TBName       string `structs:"tb_name"`
 	SQLContent   string `structs:"sql_content"`
 	LimitNum     string `structs:"limit_num"`
-}
-
-func WithInstanceName(i string) QueryOption {
-	return func(c *QueryRequest) {
-		c.InstanceName = i
-	}
-}
-
-func WithDBName(d string) QueryOption {
-	return func(c *QueryRequest) {
-		c.DBName = d
-	}
-}
-
-func WithSchemaName(d string) QueryOption {
-	return func(c *QueryRequest) {
-		c.SchemaName = d
-	}
-}
-
-func WithTBName(d string) QueryOption {
-	return func(c *QueryRequest) {
-		c.TBName = d
-	}
-}
-
-func WithSQLContent(d string) QueryOption {
-	return func(c *QueryRequest) {
-		c.SQLContent = d
-	}
-}
-
-func WithLimitNum(d string) QueryOption {
-	return func(c *QueryRequest) {
-		c.LimitNum = d
-	}
 }
 
 type DatabaseQueryResponse struct {

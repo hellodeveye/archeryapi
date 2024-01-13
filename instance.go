@@ -8,9 +8,9 @@ import (
 type ResourceType string
 
 const (
-	DatabaseResouceType ResourceType = "database"
-	TableResourceType   ResourceType = "table"
-	ColumnResourceType  ResourceType = "column"
+	DatabaseResourceType ResourceType = "database"
+	TableResourceType    ResourceType = "table"
+	ColumnResourceType   ResourceType = "column"
 )
 
 type InstanceClient struct {
@@ -20,7 +20,7 @@ type InstanceClient struct {
 type InstanceService interface {
 	GetInstances() ([]Instance, error)
 	GetInstanceResource(req *InstanceResourceQueryRequest) ([]string, error)
-	Describetable(req *InstanceResourceQueryRequest) (DescribeTable, error)
+	DescribeTable(req *InstanceResourceQueryRequest) (DescribeTable, error)
 }
 
 func (c *InstanceClient) GetInstances() ([]Instance, error) {
@@ -63,7 +63,7 @@ func (c *InstanceClient) GetInstanceResource(req *InstanceResourceQueryRequest) 
 	return instances, nil
 }
 
-func (c *InstanceClient) Describetable(req *InstanceResourceQueryRequest) (DescribeTable, error) {
+func (c *InstanceClient) DescribeTable(req *InstanceResourceQueryRequest) (DescribeTable, error) {
 	r, err := c.apiClient.httpClient.R().
 		SetFormData(map[string]string{
 			"instance_name": req.InstanceName,
@@ -77,12 +77,12 @@ func (c *InstanceClient) Describetable(req *InstanceResourceQueryRequest) (Descr
 		return DescribeTable{}, err
 	}
 	var result Result
-	var describetable DescribeTable
-	result.Data = &describetable
+	var describeTable DescribeTable
+	result.Data = &describeTable
 	if err := json.Unmarshal(r.Body(), &result); err != nil {
 		return DescribeTable{}, err
 	}
-	return describetable, nil
+	return describeTable, nil
 }
 
 type InstanceResourceQueryRequest struct {

@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/fatih/structs"
+	"github.com/mcuadros/go-defaults"
 )
 
 type DatabaseService interface {
@@ -19,6 +20,7 @@ type QueryOption func(*QueryRequest)
 
 func (c *DatabaseClient) Query(sql string, request *QueryRequest) (DatabaseQueryResponse, error) {
 	request.SQLContent = sql
+	defaults.SetDefaults(request)
 	params := map[string]string{}
 	for k, v := range structs.Map(request) {
 		params[k] = string(v.(string))
@@ -48,7 +50,7 @@ type QueryRequest struct {
 	SchemaName   string `structs:"schema_name"`
 	TBName       string `structs:"tb_name"`
 	SQLContent   string `structs:"sql_content"`
-	LimitNum     string `structs:"limit_num"`
+	LimitNum     string `structs:"limit_num" default:"100"`
 }
 
 type DatabaseQueryResponse struct {

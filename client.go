@@ -39,6 +39,7 @@ func NewClient(username, password string, opts ...ClientOption) *Client {
 
 	c.Instance = &InstanceClient{apiClient: c}
 	c.Database = &DatabaseClient{apiClient: c}
+	c.Workflow = &WorkflowClient{apiClient: c}
 
 	return c
 }
@@ -55,6 +56,7 @@ type Client struct {
 
 	Database DatabaseService
 	Instance InstanceService
+	Workflow WorkflowService
 }
 
 type ClientOption func(*Client)

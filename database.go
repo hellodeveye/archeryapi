@@ -16,14 +16,12 @@ type DatabaseClient struct {
 	apiClient *Client
 }
 
-type QueryOption func(*QueryRequest)
-
 func (c *DatabaseClient) Query(sql string, request *QueryRequest) (DatabaseQueryResponse, error) {
 	request.SQLContent = sql
 	defaults.SetDefaults(request)
 	params := map[string]string{}
 	for k, v := range structs.Map(request) {
-		params[k] = string(v.(string))
+		params[k] = v.(string)
 	}
 
 	r, err := c.apiClient.httpClient.R().

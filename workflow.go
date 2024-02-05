@@ -6,6 +6,13 @@ import (
 	"strings"
 )
 
+const (
+	// SubmitUrl is the url to submit a workflow
+	SubmitUrl = "/autoreview/"
+	// SubmitOtherInstance is the url to submit a workflow to another instance
+	SubmitOtherInstance = "/submitotherinstance/"
+)
+
 var validate *validator.Validate
 
 type WorkflowService interface {
@@ -37,10 +44,9 @@ func (c WorkflowClient) Submit(request *WorkflowSubmitRequest) error {
 	if err != nil {
 		return err
 	}
-
 	_, err = c.apiClient.httpClient.R().
 		SetFormData(params).
-		Post("/autoreview/")
+		Post(SubmitUrl)
 	if err != nil {
 		return err
 	}
@@ -49,7 +55,8 @@ func (c WorkflowClient) Submit(request *WorkflowSubmitRequest) error {
 
 // getMiddlewareToken gets the middleware token from html form
 func (c WorkflowClient) getMiddlewareToken() (string, error) {
-	resp, err := c.apiClient.httpClient.R().Get("/submitotherinstance/")
+	resp, err := c.apiClient.httpClient.R().
+		Get(SubmitOtherInstance)
 	if err != nil {
 		return "", err
 	}

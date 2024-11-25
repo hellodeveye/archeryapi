@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/fatih/structs v1.1.0
-	github.com/go-playground/validator/v10 v10.22.0
+	github.com/go-playground/validator/v10 v10.23.0
 	github.com/go-resty/resty/v2 v2.13.1
 	github.com/mcuadros/go-defaults v1.2.0
 )
